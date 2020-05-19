@@ -55,7 +55,7 @@ public class Main2Activity extends AppCompatActivity {
     }
 
     public void download_image(View view){
-
+//        Download image code
     }
 
 }
