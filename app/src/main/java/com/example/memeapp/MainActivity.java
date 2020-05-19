@@ -29,6 +29,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void button_search(View view){
-        // Python info retrieval code
+        // Python info retrieval code here
     }
 }
