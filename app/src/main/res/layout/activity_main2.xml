@@ -67,7 +67,6 @@
         android:layout_marginLeft="11dp"
         android:layout_marginEnd="12dp"
         android:layout_marginRight="12dp"
-        android:onClick="write_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/save_image"
         app:layout_constraintStart_toEndOf="@+id/editText"
