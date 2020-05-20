@@ -65,4 +65,21 @@ public class ImageAdapter extends BaseAdapter{
             R.drawable.img53
     };
 
+    public  Integer[] mExmaples= {
+        R.drawable.qe0, R.drawable.qe1, R.drawable.qe2, R.drawable.qe3,
+            R.drawable.qe4, R.drawable.qe5, R.drawable.qe6, R.drawable.qe7,
+            R.drawable.qe8, R.drawable.qe9, R.drawable.qe10, R.drawable.qe11,
+            R.drawable.qe12, R.drawable.qe13, R.drawable.qe14, R.drawable.qe15,
+            R.drawable.qe16, R.drawable.qe17, R.drawable.qe18, R.drawable.qe19,
+            R.drawable.qe20, R.drawable.qe21, R.drawable.qe22, R.drawable.qe23,
+            R.drawable.qe24, R.drawable.qe25,R.drawable.qe26, R.drawable.qe27,
+            R.drawable.qe28, R.drawable.qe29, R.drawable.qe30, R.drawable.qe31,
+            R.drawable.qe32, R.drawable.qe33,R.drawable.qe34, R.drawable.qe35,
+            R.drawable.qe36, R.drawable.qe37, R.drawable.qe38, R.drawable.qe39,
+            R.drawable.qe40, R.drawable.qe41, R.drawable.qe42,R.drawable.qe43,
+            R.drawable.qe44, R.drawable.qe45, R.drawable.qe46, R.drawable.qe47,
+            R.drawable.qe48, R.drawable.qe49, R.drawable.qe50, R.drawable.qe51,
+            R.drawable.qe52,  R.drawable.qe53,
+    };
+
 }

@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,8 +23,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import java.io.File;
+
 public class Main2Activity extends AppCompatActivity {
     ImageView imageView;
+    ImageView egView;
     ImageAdapter ia;
     int pos;
 
@@ -42,10 +46,12 @@ public class Main2Activity extends AppCompatActivity {
         ia = new ImageAdapter(this);
 
         imageView = findViewById(R.id.imageView3);
-//        imageView.setImageResource(ia.mThumbIds[pos]);
+        egView = findViewById(R.id.imageView2);
 
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), ia.mThumbIds[pos]);
         imageView.setImageBitmap(bitmap);
+
+        egView.setImageResource(ia.mExmaples[pos]);
     }
 
     public boolean onOptionsItemSelected(MenuItem item){
@@ -58,6 +64,12 @@ public class Main2Activity extends AppCompatActivity {
         return true;
     }
 
+    public void example_image(View view){
+        Intent i = new Intent(getApplicationContext(), Main3Activity.class);
+        i.putExtra("id",pos);
+        startActivity(i);
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void download_image(View view){
 //        Download image code
@@ -68,14 +80,26 @@ public class Main2Activity extends AppCompatActivity {
             ActivityCompat.requestPermissions(Main2Activity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 123);
             Toast.makeText(Main2Activity.this, "Need Permission to access storage for Downloading Image", Toast.LENGTH_LONG).show();
         }else {
-            Drawable drawable = getDrawable(ia.mThumbIds[pos]);
-            Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
-            String savedImageURL = MediaStore.Images.Media.insertImage(
-                    getContentResolver(),
-                    bitmap,
-                    "Image"+pos,
-                    "Meme image"
-            );
+//            Drawable drawable = getDrawable(ia.mThumbIds[pos]);
+//            assert drawable != null;
+//            Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
+//            String savedImageURL = MediaStore.Images.Media.insertImage(
+//                    getContentResolver(),
+//                    bitmap,
+//                    "Image"+pos,
+//                    "Meme image"
+//            );
+            File sdcard = Environment.getExternalStorageDirectory();
+            if (sdcard != null) {
+                File mediaDir = new File(sdcard, "DCIM/Camera");
+                if (!mediaDir.exists()) {
+                    mediaDir.mkdirs();
+                }
+            }
+
+            imageView.setDrawingCacheEnabled(true);
+            Bitmap b = imageView.getDrawingCache();
+            String savedImageURL = MediaStore.Images.Media.insertImage(getContentResolver(), b,"title", "description");
 //            Toast.makeText(Main2Activity.this, "Downloading Image", Toast.LENGTH_LONG).show();
 //            Uri savedImageURI = Uri.parse(savedImageURL);
             Toast.makeText(Main2Activity.this, "Image saved to gallery.\n" + savedImageURL, Toast.LENGTH_LONG).show();
