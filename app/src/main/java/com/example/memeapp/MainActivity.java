@@ -41,11 +41,9 @@ public class MainActivity extends AppCompatActivity {
     public void button_search(View view){
         // Python info retrieval code here
         try {
-            System.out.println("INside the function");
             URL url = new URL("http://192.168.1.12:5000/");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
-            System.out.println("Connected");
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(con.getInputStream()));
             String inputLine;
@@ -53,8 +51,7 @@ public class MainActivity extends AppCompatActivity {
             while ((inputLine = in.readLine()) != null) {
                 cont.append(inputLine);
             }
-            System.out.println("Getting tehj ddata "+inputLine);
-            Toast.makeText(getApplicationContext(), inputLine, Toast.LENGTH_LONG ).show();
+            Toast.makeText(getApplicationContext(), cont, Toast.LENGTH_LONG ).show();
             in.close();
         }catch (Exception ie){
             ie.printStackTrace();
