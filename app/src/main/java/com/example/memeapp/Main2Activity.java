@@ -1,6 +1,7 @@
 package com.example.memeapp;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -15,15 +16,20 @@ import android.provider.MediaStore;
 import android.text.Layout;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.MotionEvent;
+import android.view.View.OnTouchListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -38,7 +44,9 @@ public class Main2Activity extends AppCompatActivity {
     ImageView egView;
     ImageAdapter ia;
     OutputStream outputStream;
+    ViewGroup mainLayout;
     int pos;
+    public int prevTextViewId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,12 +124,63 @@ public class Main2Activity extends AppCompatActivity {
         startActivity(i);
     }
 
+    @SuppressLint("WrongViewCast")
     public void add_textview(View view){
         EditText text;
+        RelativeLayout layout = (RelativeLayout)findViewById(R.id.layout);
         text = (EditText)findViewById(R.id.editText);
         TextView textView = new TextView(this);
+        int curTextViewId = prevTextViewId + 1;
+        textView.setId(curTextViewId);
         textView.setText(text.getText().toString());
-
+        textView.setBackgroundResource(R.color.white);
+        textView.setTextColor(getResources().getColor(R.color.black));
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100,100);
+        layout.addView(textView, params);
+        prevTextViewId = curTextViewId;
     }
+
+   /* public OnTouchListener onTouchListener(){
+        return new OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                int xDelta;
+                int yDelta;
+
+                final int x = (int) event.getRawX();
+                final int y = (int) event.getRawY();
+
+                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+
+                    case MotionEvent.ACTION_DOWN:
+                        RelativeLayout.LayoutParams lParams = (RelativeLayout.LayoutParams)
+                                view.getLayoutParams();
+
+                        xDelta = x - lParams.leftMargin;
+                        yDelta = y - lParams.topMargin;
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+
+                        break;
+
+                    case MotionEvent.ACTION_MOVE:
+                        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view
+                                .getLayoutParams();
+                        xDelta = x - layoutParams.leftMargin;
+                        yDelta = y - layoutParams.topMargin;
+                        layoutParams.leftMargin = x - xDelta;
+                        layoutParams.topMargin = y - yDelta;
+                        layoutParams.rightMargin = 0;
+                        layoutParams.bottomMargin = 0;
+                        view.setLayoutParams(layoutParams);
+                        break;
+                }
+                mainLayout.invalidate();
+                return true;
+            }
+        };
+    }*/
 
 }
