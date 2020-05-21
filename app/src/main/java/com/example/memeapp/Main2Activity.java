@@ -12,10 +12,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.Layout;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -111,6 +114,14 @@ public class Main2Activity extends AppCompatActivity {
         Intent i = new Intent(getApplicationContext(), Main3Activity.class);
         i.putExtra("id",pos);
         startActivity(i);
+    }
+
+    public void add_textview(View view){
+        EditText text;
+        text = (EditText)findViewById(R.id.editText);
+        TextView textView = new TextView(this);
+        textView.setText(text.getText().toString());
+
     }
 
 }
