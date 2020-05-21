@@ -14,6 +14,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -24,11 +25,16 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 public class Main2Activity extends AppCompatActivity {
     ImageView imageView;
     ImageView egView;
     ImageAdapter ia;
+    OutputStream outputStream;
     int pos;
 
     @Override
@@ -52,6 +58,43 @@ public class Main2Activity extends AppCompatActivity {
         imageView.setImageBitmap(bitmap);
 
         egView.setImageResource(ia.mExmaples[pos]);
+
+        ImageButton imbBtn = findViewById(R.id.save_image);
+        imbBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ContextCompat.checkSelfPermission(Main2Activity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+                        ContextCompat.checkSelfPermission(Main2Activity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+                {
+                    ActivityCompat.requestPermissions(Main2Activity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 123);
+                    ActivityCompat.requestPermissions(Main2Activity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 123);
+                    Toast.makeText(Main2Activity.this, "Need Permission to access storage for Downloading Image", Toast.LENGTH_LONG).show();
+                }else {
+                    BitmapDrawable drawable = (BitmapDrawable) imageView.getDrawable();
+                    Bitmap bitmap = drawable.getBitmap();
+                    String dir = getApplicationContext().getFilesDir().getPath();
+                    System.out.println("HEerer is thje pathhhhhh "+dir);
+                    File file = new File(dir, System.currentTimeMillis()+".jpg");
+                    try {
+                        outputStream = new FileOutputStream(file);
+                    }catch (FileNotFoundException ie){
+                        ie.printStackTrace();
+                    }
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                    Toast.makeText(Main2Activity.this, "Image saved to gallery.", Toast.LENGTH_LONG).show();
+                    try {
+                        outputStream.flush();
+                    }catch (IOException ie){
+                        ie.printStackTrace();
+                    }
+                    try {
+                        outputStream.close();
+                    }catch (IOException ie){
+                        ie.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 
     public boolean onOptionsItemSelected(MenuItem item){
@@ -70,40 +113,51 @@ public class Main2Activity extends AppCompatActivity {
         startActivity(i);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public void download_image(View view){
-//        Download image code
-        if (ContextCompat.checkSelfPermission(Main2Activity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(Main2Activity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-        {
-            ActivityCompat.requestPermissions(Main2Activity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 123);
-            ActivityCompat.requestPermissions(Main2Activity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 123);
-            Toast.makeText(Main2Activity.this, "Need Permission to access storage for Downloading Image", Toast.LENGTH_LONG).show();
-        }else {
-//            Drawable drawable = getDrawable(ia.mThumbIds[pos]);
-//            assert drawable != null;
-//            Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
-//            String savedImageURL = MediaStore.Images.Media.insertImage(
-//                    getContentResolver(),
-//                    bitmap,
-//                    "Image"+pos,
-//                    "Meme image"
-//            );
-            File sdcard = Environment.getExternalStorageDirectory();
-            if (sdcard != null) {
-                File mediaDir = new File(sdcard, "DCIM/Camera");
-                if (!mediaDir.exists()) {
-                    mediaDir.mkdirs();
-                }
-            }
-
-            imageView.setDrawingCacheEnabled(true);
-            Bitmap b = imageView.getDrawingCache();
-            String savedImageURL = MediaStore.Images.Media.insertImage(getContentResolver(), b,"title", "description");
-//            Toast.makeText(Main2Activity.this, "Downloading Image", Toast.LENGTH_LONG).show();
-//            Uri savedImageURI = Uri.parse(savedImageURL);
-            Toast.makeText(Main2Activity.this, "Image saved to gallery.\n" + savedImageURL, Toast.LENGTH_LONG).show();
-        }
-    }
+//    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+//    public void download_image(View view) {
+////        Download image code
+//        if (ContextCompat.checkSelfPermission(Main2Activity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+//                ContextCompat.checkSelfPermission(Main2Activity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+//        {
+//            ActivityCompat.requestPermissions(Main2Activity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 123);
+//            ActivityCompat.requestPermissions(Main2Activity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 123);
+//            Toast.makeText(Main2Activity.this, "Need Permission to access storage for Downloading Image", Toast.LENGTH_LONG).show();
+//        }else {
+////            Drawable drawable = getDrawable(ia.mThumbIds[pos]);
+////            assert drawable != null;
+////            Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
+////            String savedImageURL = MediaStore.Images.Media.insertImage(
+////                    getContentResolver(),
+////                    bitmap,
+////                    "Image"+pos,
+////                    "Meme image"
+////            );
+////            Toast.makeText(Main2Activity.this, "Downloading Image", Toast.LENGTH_LONG).show();
+////            Uri savedImageURI = Uri.parse(savedImageURL);
+//            BitmapDrawable drawable = (BitmapDrawable) imageView.getDrawable();
+//            Bitmap bitmap = drawable.getBitmap();
+//            File filepath = Environment.getExternalStorageDirectory();
+//            File dir = new File(filepath.getAbsolutePath()+"/MemeMaker/");
+//            dir.mkdir();
+//            File file = new File(dir, System.currentTimeMillis()+".jpg");
+//            try {
+//                outputStream = new FileOutputStream(file);
+//            }catch (FileNotFoundException ie){
+//                ie.printStackTrace();
+//            }
+//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+//            Toast.makeText(Main2Activity.this, "Image saved to gallery.", Toast.LENGTH_LONG).show();
+//            try {
+//                outputStream.flush();
+//            }catch (IOException ie){
+//                ie.printStackTrace();
+//            }
+//            try {
+//                outputStream.close();
+//            }catch (IOException ie){
+//                ie.printStackTrace();
+//            }
+//        }
+//    }
 
 }
