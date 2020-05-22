@@ -46,6 +46,7 @@ public class Main2Activity extends AppCompatActivity {
     ImageAdapter ia;
     OutputStream outputStream;
     ViewGroup mainLayout;
+    String str;
     int pos;
     int[] arr;
     public int prevTextViewId = 0;
@@ -63,7 +64,7 @@ public class Main2Activity extends AppCompatActivity {
         Intent i = getIntent();
         ia = new ImageAdapter(this);
         pos = i.getExtras().getInt("id");
-        String str = i.getExtras().getString("pos_arr");
+        str = i.getExtras().getString("pos_arr");
         if(str != null) {
             arr = parse_String(str);
             sort_res(arr);
@@ -128,6 +129,8 @@ public class Main2Activity extends AppCompatActivity {
     public void example_image(View view){
         Intent i = new Intent(getApplicationContext(), Main3Activity.class);
         i.putExtra("id",pos);
+        System.out.println(""+str);
+        i.putExtra("pos_arr",str);
         startActivity(i);
     }
 
