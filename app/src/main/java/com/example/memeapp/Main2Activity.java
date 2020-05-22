@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.text.Layout;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,6 +47,7 @@ public class Main2Activity extends AppCompatActivity {
     OutputStream outputStream;
     ViewGroup mainLayout;
     int pos;
+    int[] arr;
     public int prevTextViewId = 0;
 
     @Override
@@ -59,8 +61,13 @@ public class Main2Activity extends AppCompatActivity {
         }
 
         Intent i = getIntent();
-        pos = i.getExtras().getInt("id");
         ia = new ImageAdapter(this);
+        pos = i.getExtras().getInt("id");
+        String str = i.getExtras().getString("pos_arr");
+        if(str != null) {
+            arr = parse_String(str);
+            sort_res(arr);
+        }
 
         imageView = findViewById(R.id.imageView3);
         egView = findViewById(R.id.imageView2);
@@ -134,6 +141,8 @@ public class Main2Activity extends AppCompatActivity {
         textView.setId(curTextViewId);
         textView.setText(text.getText().toString());
         textView.setBackgroundResource(R.color.white);
+        textView.setInputType(InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        textView.setSingleLine(false);
         textView.setTextColor(getResources().getColor(R.color.black));
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100,100);
         layout.addView(textView, params);
@@ -183,4 +192,30 @@ public class Main2Activity extends AppCompatActivity {
         };
     }*/
 
+   public void sort_res(int[] arr){
+       int size = arr.length;
+       for(int i=0; i<size; i++){
+           int tmp = ia.mThumbIds[i];
+           ia.mThumbIds[i] = ia.mThumbIds[arr[i]];
+           ia.mThumbIds[arr[i]] = tmp;
+
+           tmp = ia.mExmaples[i];
+           ia.mExmaples[i] = ia.mExmaples[arr[i]];
+           ia.mExmaples[arr[i]] = tmp;
+       }
+   }
+
+    public int[] parse_String(String input){
+        String output;
+        output = input.replace("[","");
+        output = output.replace("]","");
+        String[] str_array = output.split(",");
+        int size = str_array.length;
+        int[] arr = new int[size-1];
+        for(int i=0; i<size-1; i++){
+            str_array[i] = str_array[i].replaceAll("\\s","");
+            arr[i] = Integer.parseInt(str_array[i]);
+        }
+        return arr;
+    }
 }

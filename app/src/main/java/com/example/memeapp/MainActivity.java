@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println(each);
             }
             Toast.makeText(MainActivity.this, "Search complete", Toast.LENGTH_LONG ).show();
-            search_results(output);
+            search_results(output,cont.toString());
             in.close();
         }catch (Exception ie){
             ie.printStackTrace();
@@ -70,8 +70,8 @@ public class MainActivity extends AppCompatActivity {
 
     public int[] parse_String(String input){
         String output;
-        output = input.toString().replace("[","");
-        output = output.toString().replace("]","");
+        output = input.replace("[","");
+        output = output.replace("]","");
         String[] str_array = output.split(",");
         int size = str_array.length;
         int[] arr = new int[size-1];
@@ -82,16 +82,31 @@ public class MainActivity extends AppCompatActivity {
         return arr;
     }
 
-    public void search_results(int[] arr){
-        ImageAdapter ia = new ImageAdapter(this);
+    public void search_results(int[] arr, final String str){
+        final ImageAdapter ia = new ImageAdapter(this);
         int size = arr.length;
         for(int i=0; i<size; i++){
             int tmp = ia.mThumbIds[i];
             ia.mThumbIds[i] = ia.mThumbIds[arr[i]];
             ia.mThumbIds[arr[i]] = tmp;
-        }
 
+            tmp = ia.mExmaples[i];
+            ia.mExmaples[i] = ia.mExmaples[arr[i]];
+            ia.mExmaples[arr[i]] = tmp;
+        }
+        System.out.println(""+str);
         GridView gridv = findViewById(R.id.grid1);
         gridv.setAdapter(ia);
+
+        gridv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i = new Intent(getApplicationContext(), Main2Activity.class);
+                i.putExtra("id",position);
+                System.out.println(""+str);
+                i.putExtra("pos_arr",str);
+                startActivity(i);
+            }
+        });
     }
 }
