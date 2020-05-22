@@ -41,9 +41,13 @@ public class MainActivity extends AppCompatActivity {
     public void button_search(View view){
         // Python info retrieval code here
         try {
-            URL url = new URL("http://192.168.1.12:5000/");
+            EditText edt = findViewById(R.id.editText2);
+            String query = edt.getText().toString();
+            System.out.println("Here is the query "+query);
+            URL url = new URL("http://192.168.1.12:5000/"+query);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
+
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(con.getInputStream()));
             String inputLine;
@@ -51,12 +55,43 @@ public class MainActivity extends AppCompatActivity {
             while ((inputLine = in.readLine()) != null) {
                 cont.append(inputLine);
             }
-            Toast.makeText(getApplicationContext(), cont, Toast.LENGTH_LONG ).show();
+
+            int[] output = parse_String(cont.toString());
+            for(int each: output){
+                System.out.println(each);
+            }
+            Toast.makeText(MainActivity.this, "Search complete", Toast.LENGTH_LONG ).show();
+            search_results(output);
             in.close();
         }catch (Exception ie){
             ie.printStackTrace();
         }
+    }
 
+    public int[] parse_String(String input){
+        String output;
+        output = input.toString().replace("[","");
+        output = output.toString().replace("]","");
+        String[] str_array = output.split(",");
+        int size = str_array.length;
+        int[] arr = new int[size-1];
+        for(int i=0; i<size-1; i++){
+            str_array[i] = str_array[i].replaceAll("\\s","");
+            arr[i] = Integer.parseInt(str_array[i]);
+        }
+        return arr;
+    }
 
+    public void search_results(int[] arr){
+        ImageAdapter ia = new ImageAdapter(this);
+        int size = arr.length;
+        for(int i=0; i<size; i++){
+            int tmp = ia.mThumbIds[i];
+            ia.mThumbIds[i] = ia.mThumbIds[arr[i]];
+            ia.mThumbIds[arr[i]] = tmp;
+        }
+
+        GridView gridv = findViewById(R.id.grid1);
+        gridv.setAdapter(ia);
     }
 }
