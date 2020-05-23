@@ -2,16 +2,32 @@ package com.example.memeapp;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 public class Main3Activity extends AppCompatActivity {
     int pos;
     int[] arr;
     ImageView imageView;
+    OutputStream outputStream;
     ImageAdapter ia;
 
     @Override
@@ -39,6 +55,43 @@ public class Main3Activity extends AppCompatActivity {
 
         imageView = findViewById(R.id.imageView4);
         imageView.setImageResource(ia.mExmaples[pos]);
+
+        ImageButton imbBtn = findViewById(R.id.imageButton3);
+        imbBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ContextCompat.checkSelfPermission(Main3Activity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+                        ContextCompat.checkSelfPermission(Main3Activity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+                {
+                    ActivityCompat.requestPermissions(Main3Activity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 123);
+                    ActivityCompat.requestPermissions(Main3Activity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 123);
+                    Toast.makeText(Main3Activity.this, "Need Permission to access storage for Downloading Image", Toast.LENGTH_LONG).show();
+                }else {
+                    BitmapDrawable drawable = (BitmapDrawable) imageView.getDrawable();
+                    Bitmap bitmap = drawable.getBitmap();
+                    String dir = getApplicationContext().getFilesDir().getPath();
+
+                    File file = new File(dir, System.currentTimeMillis()+".jpg");
+                    try {
+                        outputStream = new FileOutputStream(file);
+                    }catch (FileNotFoundException ie){
+                        ie.printStackTrace();
+                    }
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                    Toast.makeText(Main3Activity.this, "Image saved to gallery.", Toast.LENGTH_LONG).show();
+                    try {
+                        outputStream.flush();
+                    }catch (IOException ie){
+                        ie.printStackTrace();
+                    }
+                    try {
+                        outputStream.close();
+                    }catch (IOException ie){
+                        ie.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 
     public boolean onOptionsItemSelected(MenuItem item){
